@@ -11,7 +11,9 @@ pygame.init()
 colours = {
     "dark_green": (14, 181, 36),
     "red": (255, 0, 0),
-    "gray": (161, 161, 161)
+    "gray": (161, 161, 161),
+    "white": (255, 255, 255),
+    "black": (0, 0, 0)
     
     }
 
@@ -22,6 +24,27 @@ screen_height = 800
 
 # Set screen display
 screen = pygame.display.set_mode((screen_width, screen_height))
+
+# Road Location and Size
+road_pos_x = 100
+road_pos_y = 0
+
+road_width = 400
+road_length = screen_height
+
+# Lanes Location and Size
+lane_width = 20
+lane_length = screen_height
+
+lane_pos_x = road_pos_x - lane_width + 100
+lane_pos_y = 0
+
+# Car Location and Size
+car_pos_x = road_pos_x + lane_pos_x
+car_pos_y = screen_height - 200
+
+car_width = 50
+car_length = 90
 
 # Game Icon and Name
 game_name = pygame.display.set_caption("Racing Game")
@@ -56,23 +79,38 @@ while not game_over:
     # Background Colour
     screen.fill(colours["dark_green"])
     
+    # Road Creation
+    road = pygame.draw.rect(screen, colours["gray"], 
+                            [road_pos_x, road_pos_y, road_width, road_length])
+    
+    # Lanes Creation
+    lane_1 = pygame.draw.rect(screen, colours["white"], 
+                            [lane_pos_x, lane_pos_y, lane_width, lane_length])
+    lane_2 = pygame.draw.rect(screen, colours["white"], 
+                            [lane_pos_x + 100 + lane_width, lane_pos_y, lane_width, lane_length])
+    lane_3 = pygame.draw.rect(screen, colours["white"], 
+                            [lane_pos_x + 200 + lane_width, lane_pos_y, lane_width, lane_length])    
+    
     
     # Player Car Model
+    player_car = pygame.draw.rect(screen, colours["red"],
+                                  [car_pos_x, car_pos_y, car_width, car_length])
 
+    # Player Movement and Limiter Controller
+    
+    
     # Other Racers Model
+
 
     # Other Racers Movement
 
-    # Player Movement and Limiter Controller
 
     # Score
 
+
     # Highscore
 
-    # Road Creation
-
-    # Lanes Creation
-
+    
     # Background Creation
     
     # Pygame Display Update

@@ -39,12 +39,14 @@ lane_length = screen_height
 lane_pos_x = road_pos_x - lane_width + 100
 lane_pos_y = 0
 
-# Car Location and Size
+# Player Car Location and Size
 car_pos_x = road_pos_x + lane_pos_x
 car_pos_y = screen_height - 200
 
 car_width = 50
 car_length = 90
+
+car_change_x = 0
 
 # Game Icon and Name
 game_name = pygame.display.set_caption("Racing Game")
@@ -97,8 +99,22 @@ while not game_over:
                                   [car_pos_x, car_pos_y, car_width, car_length])
 
     # Player Movement and Limiter Controller
+    for event in pygame.event.get():
+      
+      if event.type == pygame.QUIT:
+        quit_game = True
+        
+      if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_RIGHT:
+          car_change_x = -10   
+                     
+        elif event.key == pygame.K_LEFT:
+          car_change_x = 10
+          
+        elif event.key == pygame.K_ESCAPE:
+          quit_game = True
     
-    
+    car_pos_x += car_change_x
     # Other Racers Model
 
 

@@ -1,5 +1,6 @@
 # Imports
 import pygame
+import time
 
 # Constants
 
@@ -56,6 +57,9 @@ car_change_x = 0
 game_name = pygame.display.set_caption("Racing Game")
 game_icon = pygame.image.load("images/game_icon.png")
 pygame.display.set_icon(game_icon)
+
+# Clock used for FPS
+clock = pygame.time.Clock()
 
 # Enemy Racers Locations and Size
 racer_car_pos_x = lane_pos_x_1 + 2 * car_width
@@ -114,7 +118,6 @@ while not game_over:
 
     # Player Movement and Limiter Controller
     for event in pygame.event.get():
-      
       if event.type == pygame.QUIT:
         quit_game = True
         
@@ -127,6 +130,10 @@ while not game_over:
           
         elif event.key == pygame.K_ESCAPE:
           quit_game = True
+            
+      if event.type == pygame.KEYUP:
+        if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+          car_change_x = 0
     
     car_pos_x += car_change_x
     
@@ -177,5 +184,9 @@ while not game_over:
 
     # Pygame Display Update
     pygame.display.update()
+
+    # FPS
+    clock.tick(40)
+
 
 # Game Over

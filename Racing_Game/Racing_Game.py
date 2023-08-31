@@ -140,17 +140,8 @@ while not game_over:
       racer_car_pos_y = 0 - racer_length
     
     # Collision Detection
-    if car_pos_x + car_width >= racer_car_pos_x:
-       print("Death 1")
-        
-    elif car_pos_x <= racer_car_pos_x + racer_width:
-       print("Death 2")
-    
-    elif car_pos_y + car_length >= racer_car_pos_y:
-       print("Death 3")
-    
-    elif car_pos_y <= racer_car_pos_y + racer_length:
-       print("Death 4")
+    if car_pos_x + car_width >= racer_car_pos_x and car_pos_x <= racer_car_pos_x + racer_width and car_pos_y + car_length >= racer_car_pos_y and car_pos_y <= racer_car_pos_y + racer_length:
+       print("Death")
 
     # Score
 

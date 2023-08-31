@@ -1,0 +1,17 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/images
+/.vs/Racing_Game/FileContentIndex/177299d5-edd8-4390-b9f1-95556e827104.vsidx
+/.vs/Racing_Game/FileContentIndex/54d826b8-bedf-4756-926d-1dc8829ca3ed.vsidx
+/.vs/Racing_Game/FileContentIndex/36934142-e484-41db-98e0-d9f7dae4e12b.vsidx
+/.vs/Racing_Game/FileContentIndex/79658500-c0ed-4a98-9be0-4b5e5b2bd261.vsidx
+/.vs/Racing_Game/FileContentIndex/7c63e4c1-6177-4a18-992d-3128503ef98a.vsidx
+/.vs/Racing_Game/FileContentIndex/a6f75b10-a6fc-4527-83fd-5ef884380568.vsidx
+/.vs/Racing_Game/FileContentIndex/e07d1351-d0e0-4412-be4c-3293e1a1a55a.vsidx
+/.vs/Racing_Game/FileContentIndex
+/.vs/Racing_Game/v17/.wsuo
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json

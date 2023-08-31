@@ -33,14 +33,17 @@ road_width = 400
 road_length = screen_height
 
 # Lanes Location and Size
-lane_width = 20
+lane_width = 10
 lane_length = screen_height
 
-lane_pos_x = road_pos_x - lane_width + 100
+lane_pos_x_1 = road_pos_x + 100 - (lane_width / 2)
+lane_pos_x_2 = lane_pos_x_1 + 100
+lane_pos_x_3 = lane_pos_x_2 + 100
+
 lane_pos_y = 0
 
 # Player Car Location and Size
-car_pos_x = road_pos_x + lane_pos_x
+car_pos_x = road_pos_x + lane_pos_x_1
 car_pos_y = screen_height - 200
 
 car_width = 50
@@ -48,11 +51,22 @@ car_length = 90
 
 car_change_x = 0
 
+
 # Game Icon and Name
 game_name = pygame.display.set_caption("Racing Game")
 game_icon = pygame.image.load("images/game_icon.png")
 pygame.display.set_icon(game_icon)
 
+# Enemy Racers Locations and Size
+racer_car_pos_x = lane_pos_x_1 + 2 * car_width
+racer_car_pos_y = 0
+
+racer_width = car_width
+racer_length = car_length
+
+
+# Debug
+debug = True
 
 # Game Over Constant to allow game to play again
 game_over = False
@@ -87,11 +101,11 @@ while not game_over:
     
     # Lanes Creation
     lane_1 = pygame.draw.rect(screen, colours["white"], 
-                            [lane_pos_x, lane_pos_y, lane_width, lane_length])
+                            [lane_pos_x_1, lane_pos_y, lane_width, lane_length])
     lane_2 = pygame.draw.rect(screen, colours["white"], 
-                            [lane_pos_x + 100 + lane_width, lane_pos_y, lane_width, lane_length])
+                            [lane_pos_x_2, lane_pos_y, lane_width, lane_length])
     lane_3 = pygame.draw.rect(screen, colours["white"], 
-                            [lane_pos_x + 200 + lane_width, lane_pos_y, lane_width, lane_length])    
+                            [lane_pos_x_3, lane_pos_y, lane_width, lane_length])    
     
     
     # Player Car Model
@@ -106,20 +120,37 @@ while not game_over:
         
       if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_RIGHT:
-          car_change_x = -10   
+          car_change_x = -1   
                      
         elif event.key == pygame.K_LEFT:
-          car_change_x = 10
+          car_change_x = 1
           
         elif event.key == pygame.K_ESCAPE:
           quit_game = True
     
     car_pos_x += car_change_x
+    
     # Other Racers Model
-
+    racer_1 = pygame.draw.rect(screen, colours["white"],
+                               [racer_car_pos_x, racer_car_pos_y, racer_width, racer_length])
 
     # Other Racers Movement
-
+    racer_car_pos_y += 1
+    if racer_car_pos_y >= screen_height:
+      racer_car_pos_y = 0 - racer_length
+    
+    # Collision Detection
+    if car_pos_x + car_width >= racer_car_pos_x:
+       print("Death 1")
+        
+    elif car_pos_x <= racer_car_pos_x + racer_width:
+       print("Death 2")
+    
+    elif car_pos_y + car_length >= racer_car_pos_y:
+       print("Death 3")
+    
+    elif car_pos_y <= racer_car_pos_y + racer_length:
+       print("Death 4")
 
     # Score
 
@@ -129,6 +160,30 @@ while not game_over:
     
     # Background Creation
     
+    # Debug
+    if debug == True:
+      # Lane Locations
+      print("\n*** Lane Strip Locations ***")
+      print("Lane 1 ", lane_1)
+      print("Lane 2 ", lane_2)
+      print("Lane 3 ", lane_3)
+      
+      # Car Lane Lengths
+      print("\n*** Car Lane Lengths ***")
+      print("Car Lane Length 1 ", lane_pos_x_1 - road_pos_x)
+      print("Car Lane Length 2 ", lane_pos_x_2 - (lane_pos_x_1 + lane_width))
+      print("Car Lane Length 3 ", lane_pos_x_3 - (lane_pos_x_2 + lane_width))
+      print("Car Lane Length 4 ", road_width + road_pos_x - (lane_pos_x_3 + lane_width))
+      
+      # Player Car and Opposistion Locations
+      print("\n*** Player and other Car Locations ***")
+      print("Player Car ", player_car)
+      print("Racer 1 ", racer_1)
+      
+      # Stops the console from being overloaded with information
+      debug = False
+
+
     # Pygame Display Update
     pygame.display.update()
 

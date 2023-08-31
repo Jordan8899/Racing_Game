@@ -62,11 +62,18 @@ pygame.display.set_icon(game_icon)
 clock = pygame.time.Clock()
 
 # Enemy Racers Locations and Size
-racer_car_pos_x = lane_pos_x_1 + 2 * car_width
-racer_car_pos_y = 0
-
 racer_width = car_width
 racer_length = car_length
+
+racer_car_1_pos_x = (lane_pos_x_1 - road_pos_x) / 2 + road_pos_x - (racer_width / 2)
+
+racer_car_2_pos_x = lane_pos_x_2
+
+racer_car_3_pos_x = lane_pos_x_3
+
+racer_car_4_pos_x = lane_pos_x_3 + 50
+
+racer_car_pos_y = 0
 
 
 # Debug
@@ -123,10 +130,10 @@ while not game_over:
         
       if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_RIGHT:
-          car_change_x = -1   
+          car_change_x = 5   
                      
         elif event.key == pygame.K_LEFT:
-          car_change_x = 1
+          car_change_x = -5
           
         elif event.key == pygame.K_ESCAPE:
           quit_game = True
@@ -139,16 +146,24 @@ while not game_over:
     
     # Other Racers Model
     racer_1 = pygame.draw.rect(screen, colours["white"],
-                               [racer_car_pos_x, racer_car_pos_y, racer_width, racer_length])
-
+                               [racer_car_1_pos_x, racer_car_pos_y, racer_width, racer_length])
+    racer_2 = pygame.draw.rect(screen, colours["white"],
+                               [racer_car_2_pos_x, racer_car_pos_y, racer_width, racer_length])
+    racer_3 = pygame.draw.rect(screen, colours["white"],
+                               [racer_car_3_pos_x, racer_car_pos_y, racer_width, racer_length])
+    racer_4 = pygame.draw.rect(screen, colours["white"],
+                               [racer_car_4_pos_x, racer_car_pos_y, racer_width, racer_length])
+    
     # Other Racers Movement
-    racer_car_pos_y += 1
+    racer_car_pos_y += 5
     if racer_car_pos_y >= screen_height:
       racer_car_pos_y = 0 - racer_length
     
     # Collision Detection
-    if car_pos_x + car_width >= racer_car_pos_x and car_pos_x <= racer_car_pos_x + racer_width and car_pos_y + car_length >= racer_car_pos_y and car_pos_y <= racer_car_pos_y + racer_length:
-       print("Death")
+    racer_x_pos_list = [racer_car_1_pos_x, racer_car_2_pos_x, racer_car_3_pos_x, racer_car_4_pos_x]
+    for racers in racer_x_pos_list:
+        if car_pos_x + car_width >= racers and car_pos_x <= racers + racer_width and car_pos_y + car_length >= racer_car_pos_y and car_pos_y <= racer_car_pos_y + racer_length:
+            print("Death")
 
     # Score
 

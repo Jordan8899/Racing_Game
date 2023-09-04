@@ -74,7 +74,7 @@ racer_car_3_pos_x = lane_pos_x_3
 
 racer_car_4_pos_x = lane_pos_x_3 + 50
 
-racer_car_pos_y_1 = 0
+racer_car_pos_y = 0
 
 racer_car_pos_y_2 = 0
 
@@ -170,28 +170,24 @@ while not game_over:
     
     # Other Racers Model
     racer_1 = pygame.draw.rect(screen, colours["white"],
-                               [racer_car_1_pos_x, racer_car_pos_y_1, racer_width, racer_length])
+                               [racer_car_1_pos_x, racer_car_pos_y, racer_width, racer_length])
     racer_2 = pygame.draw.rect(screen, colours["white"],
-                               [racer_car_2_pos_x, racer_car_pos_y_2, racer_width, racer_length])
+                               [racer_car_2_pos_x, racer_car_pos_y, racer_width, racer_length])
     racer_3 = pygame.draw.rect(screen, colours["white"],
-                               [racer_car_3_pos_x, racer_car_pos_y_3, racer_width, racer_length])
+                               [racer_car_3_pos_x, racer_car_pos_y, racer_width, racer_length])
     racer_4 = pygame.draw.rect(screen, colours["white"],
-                               [racer_car_4_pos_x, racer_car_pos_y_4, racer_width, racer_length])
+                               [racer_car_4_pos_x, racer_car_pos_y, racer_width, racer_length])
     
-    # Speed Randomizer
-    random_speed = randomizer()
-    
-    # Enemy Racers Movement using Speed Randomizer
-    racer_y_list = [racer_car_pos_y_1, racer_car_pos_y_2, racer_car_pos_y_3, racer_car_pos_y_4]
 
-    for y_pos in racer_y_list:
-        y_pos += speed
-    
-    for y_pos in racer_y_list:
-        if y_pos >= screen_height:
-            racer_car_pos_y = 0 - racer_length
-            warm_up_round = False
-            speed = random_speed
+    random_speed = randomizer()    
+
+    # Enemy Racers Movement
+    if racer_car_pos_y >= screen_height:
+        racer_car_pos_y = 0 - racer_length
+        warm_up_round = False
+        speed = random_speed
+
+    racer_car_pos_y += speed
     
     # Collision Detection
     racer_x_pos_list = [racer_car_1_pos_x, racer_car_2_pos_x, racer_car_3_pos_x, racer_car_4_pos_x]

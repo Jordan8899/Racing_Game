@@ -1,5 +1,4 @@
 # Imports
-from shutil import move
 import pygame
 import time
 import random
@@ -16,7 +15,10 @@ colours = {
     "red": (255, 0, 0),
     "gray": (161, 161, 161),
     "white": (255, 255, 255),
-    "black": (0, 0, 0)
+    "black": (0, 0, 0),
+    "blue": (0, 0, 255),
+    "green": (0, 255, 0),
+    "pink": (255, 0, 239)
     
 }
 
@@ -64,7 +66,7 @@ game_icon = pygame.image.load("images/game_icon.png")
 pygame.display.set_icon(game_icon)
 
 # Fonts
-font = pygame.font.Font("freesansbold.ttf", 50)
+font = pygame.font.Font("freesansbold.ttf", 25)
 
 # Clock used for FPS
 clock = pygame.time.Clock()
@@ -75,11 +77,11 @@ racer_length = car_length
 
 racer_car_1_pos_x = (lane_pos_x_1 - road_pos_x) / 2 + road_pos_x - (racer_width / 2)
 
-racer_car_2_pos_x = lane_pos_x_2
+racer_car_2_pos_x = racer_car_1_pos_x + 100
 
-racer_car_3_pos_x = lane_pos_x_3
+racer_car_3_pos_x = racer_car_1_pos_x + 200
 
-racer_car_4_pos_x = lane_pos_x_3 + 50
+racer_car_4_pos_x = racer_car_1_pos_x + 300
 
 racer_car_pos_y_1 = 0 - racer_length
 
@@ -174,14 +176,14 @@ def display_text(msg, txt_colour, bkgd_colour, is_score, is_highscore):
 
     if is_score == True:
       txt = font.render(msg, True, txt_colour)
-      text_box = txt.get_rect(center = ((screen_width / screen_width), 
-                                        (screen_height / screen_height)))
+      text_box = txt.get_rect(center = ((screen_width / screen_width + 50), 
+                                        (screen_height / screen_height + 25)))
 
 
     elif is_highscore == True:
       txt = font.render(msg, True, txt_colour)
-      text_box = txt.get_rect(center = ((screen_width - 200), 
-                                        (screen_height / screen_height)))
+      text_box = txt.get_rect(center = ((screen_width - 100), 
+                                        (screen_height / screen_height + 25)))
 
     
     else:
@@ -236,7 +238,12 @@ while not game_over:
       if event.type == pygame.KEYUP:
         if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
           car_change_x = 0
+          
         if car_pos_x <= road_pos_x:
+           move_left = False
+           
+        if car_pos_x + car_width >= road_pos_x + road_width:
+           move_right = False
     
     car_pos_x += car_change_x
     
@@ -255,15 +262,15 @@ while not game_over:
        
     
     # Other Racers Model
-    racer_1 = pygame.draw.rect(screen, colours["white"],
-                               [racer_car_1_pos_x, racer_car_pos_y_1, racer_width, racer_length])
-    racer_2 = pygame.draw.rect(screen, colours["white"],
-                               [racer_car_2_pos_x, racer_car_pos_y_2, racer_width, racer_length])
-    racer_3 = pygame.draw.rect(screen, colours["white"],
-                               [racer_car_3_pos_x, racer_car_pos_y_3, racer_width, racer_length])
-    racer_4 = pygame.draw.rect(screen, colours["white"],
-                               [racer_car_4_pos_x, racer_car_pos_y_4, racer_width, racer_length])
-       
+    racer_1 = pygame.Rect(racer_car_1_pos_x, racer_car_pos_y_1, racer_width, racer_length)
+    racer_2 = pygame.Rect(racer_car_2_pos_x, racer_car_pos_y_2, racer_width, racer_length)
+    racer_3 = pygame.Rect(racer_car_3_pos_x, racer_car_pos_y_3, racer_width, racer_length)
+    racer_4 = pygame.Rect(racer_car_4_pos_x, racer_car_pos_y_4, racer_width, racer_length)
+    
+    # Enemy Racers Car Image Change
+    racer_green = pygame.image.load("images/car_2.png").convert_alpha()
+    resized_green_racer = pygame.transform.smoothscale(racer_green, [racer_width, racer_length])
+    screen.blit(resized_green_racer, racer_4)
 
     # Enemy Racers Movement
     if racer_car_pos_y_1 >= screen_height:
@@ -286,10 +293,10 @@ while not game_over:
        speed_4 = randomizer()
        score += 1
 
-    #racer_car_pos_y_1 += speed_1
-    #racer_car_pos_y_2 += speed_2
-    #racer_car_pos_y_3 += speed_3
-    #racer_car_pos_y_4 += speed_4
+    racer_car_pos_y_1 += speed_1
+    racer_car_pos_y_2 += speed_2
+    racer_car_pos_y_3 += speed_3
+    racer_car_pos_y_4 += speed_4
 
     # Collision Detection  
     if car_pos_x + car_width >= racer_car_1_pos_x and car_pos_x <= racer_car_1_pos_x + racer_width and car_pos_y + car_length >= racer_car_pos_y_1 and car_pos_y <= racer_car_pos_y_1 + racer_length:
@@ -315,8 +322,6 @@ while not game_over:
     highscore = load_high_score(score)
     display_text("Highscore: {}".format(highscore), colours["black"], None, False, True)
     
-    # Background Creation
-    
     # Debug
     if debug == True:
       # Lane Locations
@@ -336,6 +341,9 @@ while not game_over:
       print("\n*** Player and other Car Locations ***")
       print("Player Car ", player_car)
       print("Racer 1 ", racer_1)
+      print("Racer 2 ", racer_2)
+      print("Racer 3 ", racer_3)
+      print("Racer 4 ", racer_4)
       
       # Stops the console from being overloaded with information
       debug = False

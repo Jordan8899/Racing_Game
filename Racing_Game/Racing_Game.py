@@ -1,4 +1,5 @@
 # Imports
+from shutil import move
 import pygame
 import time
 import random
@@ -38,14 +39,14 @@ road_length = screen_height
 lane_width = 10
 lane_length = screen_height
 
-lane_pos_x_1 = road_pos_x + 100 - (lane_width / 2)
-lane_pos_x_2 = lane_pos_x_1 + 100
-lane_pos_x_3 = lane_pos_x_2 + 100
+lane_pos_x_1 = road_pos_x + 100 - (lane_width / 2) - 2.5
+lane_pos_x_2 = lane_pos_x_1 + 100 + 2.5
+lane_pos_x_3 = lane_pos_x_2 + 100 + 2.5
 
 lane_pos_y = 0
 
 # Player Car Location and Size
-car_pos_x = road_pos_x + lane_pos_x_1
+car_pos_x = screen_width / 2
 car_pos_y = screen_height - 200
 
 car_width = 50
@@ -53,11 +54,17 @@ car_length = 90
 
 car_change_x = 0
 
+# Player Movement Limiter
+move_left = True
+move_right = True
 
 # Game Icon and Name
 game_name = pygame.display.set_caption("Racing Game")
 game_icon = pygame.image.load("images/game_icon.png")
 pygame.display.set_icon(game_icon)
+
+# Fonts
+font = pygame.font.Font("freesansbold.ttf", 50)
 
 # Clock used for FPS
 clock = pygame.time.Clock()
@@ -74,13 +81,13 @@ racer_car_3_pos_x = lane_pos_x_3
 
 racer_car_4_pos_x = lane_pos_x_3 + 50
 
-racer_car_pos_y_1 = float(0 - racer_length)
+racer_car_pos_y_1 = 0 - racer_length
 
-racer_car_pos_y_2 = float(0 - racer_length)
+racer_car_pos_y_2 = 0 - racer_length
 
-racer_car_pos_y_3 = float(0 - racer_length)
+racer_car_pos_y_3 = 0 - racer_length
 
-racer_car_pos_y_4 = float(0 - racer_length)
+racer_car_pos_y_4 = 0 - racer_length
 
 # Speed Randomizer for Enemy Racers
 speed_list = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
@@ -90,6 +97,7 @@ speed_1 = 3
 speed_2 = 7
 speed_3 = 2 
 speed_4 = 5
+
 # Debug
 debug = True
 
@@ -118,7 +126,71 @@ def randomizer():
     randomized_number = random.randint(0, speed_changes)
     return speed_list[randomized_number]
 
+# Highscore Function
+def load_high_score(score):
+        
+    """
+    
+    This function will test to see if a highscore
+    file exists and then create one if one does not
+    if one does exist it just uses the existing one
+    then it'll write the score in the file and update
+    if the score is greater than the one stored already
+    
+    """
 
+    try:
+      hi_score_file = open("Highscore.txt", "r")
+    except:
+      hi_score_file = open("Highscore.txt", "w")
+      hi_score_file.write("0")
+    hi_score_file = open("Highscore.txt", "r")
+    value = hi_score_file.read()
+
+    if score > int(value):
+      hi_score_file = open("Highscore.txt", "w")
+      hi_score_file.write(str(score))
+      value = score
+    
+    hi_score_file.close()
+    return value
+
+# Message / Text Display Function
+def display_text(msg, txt_colour, bkgd_colour, is_score, is_highscore):
+    
+    """
+    
+    This function displays a text onto the screen for
+    the user to read, this includes score, highscore
+    and death messages
+    
+    Scope includes: the message being displayed
+    the text colour
+    the background colour
+    bool if this display is for the score
+    bool if this display is for the highscore
+    
+    """
+
+    if is_score == True:
+      txt = font.render(msg, True, txt_colour)
+      text_box = txt.get_rect(center = ((screen_width / screen_width), 
+                                        (screen_height / screen_height)))
+
+
+    elif is_highscore == True:
+      txt = font.render(msg, True, txt_colour)
+      text_box = txt.get_rect(center = ((screen_width - 200), 
+                                        (screen_height / screen_height)))
+
+    
+    else:
+      txt = font.render(msg, True, txt_colour, bkgd_colour)
+      text_box = txt.get_rect(center = ((screen_width / 2), 
+                                        (screen_height / 2)))
+    
+
+    screen.blit(txt, text_box)
 
 # Main Routine
 
@@ -152,10 +224,10 @@ while not game_over:
         quit_game = True
         
       if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_RIGHT:
+        if event.key == pygame.K_RIGHT and move_right == True:
           car_change_x = 5   
                      
-        elif event.key == pygame.K_LEFT:
+        elif event.key == pygame.K_LEFT and move_left == True:
           car_change_x = -5
           
         elif event.key == pygame.K_ESCAPE:
@@ -164,8 +236,23 @@ while not game_over:
       if event.type == pygame.KEYUP:
         if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
           car_change_x = 0
+        if car_pos_x <= road_pos_x:
     
     car_pos_x += car_change_x
+    
+    # Player Movement Limiter
+    if car_pos_x <= road_pos_x:
+       move_left = False
+       car_change_x = 0
+       
+    elif car_pos_x + car_width >= road_pos_x + road_width:
+       move_right = False
+       car_change_x = 0
+    
+    else:
+       move_left = True
+       move_right = True
+       
     
     # Other Racers Model
     racer_1 = pygame.draw.rect(screen, colours["white"],
@@ -182,42 +269,51 @@ while not game_over:
     if racer_car_pos_y_1 >= screen_height:
        racer_car_pos_y_1 = 0 - racer_length
        speed_1 = randomizer()
+       score += 1
      
     if racer_car_pos_y_2 >= screen_height:
        racer_car_pos_y_2 = 0 - racer_length
        speed_2 = randomizer()
+       score += 1
        
     if racer_car_pos_y_3 >= screen_height:
        racer_car_pos_y_3 = 0 - racer_length
        speed_3 = randomizer()
+       score += 1
        
     if racer_car_pos_y_4 >= screen_height:
        racer_car_pos_y_4 = 0 - racer_length
        speed_4 = randomizer()
+       score += 1
 
-    racer_car_pos_y_1 += speed_1
-    racer_car_pos_y_2 += speed_2
-    racer_car_pos_y_3 += speed_3
-    racer_car_pos_y_4 += speed_4
+    #racer_car_pos_y_1 += speed_1
+    #racer_car_pos_y_2 += speed_2
+    #racer_car_pos_y_3 += speed_3
+    #racer_car_pos_y_4 += speed_4
 
     # Collision Detection  
     if car_pos_x + car_width >= racer_car_1_pos_x and car_pos_x <= racer_car_1_pos_x + racer_width and car_pos_y + car_length >= racer_car_pos_y_1 and car_pos_y <= racer_car_pos_y_1 + racer_length:
        print("Death Car 1")
+       game_over = True
     
     elif car_pos_x + car_width >= racer_car_2_pos_x and car_pos_x <= racer_car_2_pos_x + racer_width and car_pos_y + car_length >= racer_car_pos_y_2 and car_pos_y <= racer_car_pos_y_2 + racer_length:
        print("Death Car 2")
+       game_over = True
        
     elif car_pos_x + car_width >= racer_car_3_pos_x and car_pos_x <= racer_car_3_pos_x + racer_width and car_pos_y + car_length >= racer_car_pos_y_3 and car_pos_y <= racer_car_pos_y_3 + racer_length:
        print("Death Car 3")
+       game_over = True
        
     elif car_pos_x + car_width >= racer_car_4_pos_x and car_pos_x <= racer_car_4_pos_x + racer_width and car_pos_y + car_length >= racer_car_pos_y_4 and car_pos_y <= racer_car_pos_y_4 + racer_length:
        print("Death Car 4")
+       game_over = True
        
     # Score
-
+    display_text("Score: {}".format(score), colours["black"], None, True, False)
 
     # Highscore
-
+    highscore = load_high_score(score)
+    display_text("Highscore: {}".format(highscore), colours["black"], None, False, True)
     
     # Background Creation
     
@@ -253,3 +349,4 @@ while not game_over:
 
 
 # Game Over
+print("Game Quit")

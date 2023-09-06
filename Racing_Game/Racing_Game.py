@@ -48,11 +48,11 @@ lane_pos_x_3 = lane_pos_x_2 + 100 + 2.5
 lane_pos_y = 0
 
 # Player Car Location and Size
-car_pos_x = screen_width / 2
-car_pos_y = screen_height - 200
-
 car_width = 60
 car_length = 100
+
+car_pos_x = screen_width / 2 - (car_width / 2)
+car_pos_y = screen_height - 200
 
 car_change_x = 0
 
@@ -91,6 +91,8 @@ racer_car_pos_y_3 = 0 - racer_length
 
 racer_car_pos_y_4 = 0 - racer_length
 
+racer_y_list = [racer_car_pos_y_1, racer_car_pos_y_2, racer_car_pos_y_3, racer_car_pos_y_4]
+
 # Speed Randomizer for Enemy Racers
 speed_list = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
@@ -105,6 +107,12 @@ debug = True
 
 # Game Over Constant to allow game to play again
 game_over = False
+
+# Play Again is so that the game can repeat even after death without a crash
+play_again = True
+
+# Crash for collision detection
+crash = False
 
 # Fonts
 
@@ -241,156 +249,188 @@ def enemy_racer_movement(racer_y, speed, score):
     return racer_y, speed, score
 
 # Collision Detection and Game Over
-def collision_detection(racer_x, racer_y, game_over):
+def collision_detection(racer_x, racer_y, crash):
     if car_pos_x + car_width >= racer_x and car_pos_x <= racer_x + racer_width and car_pos_y + car_length >= racer_y and car_pos_y <= racer_y + racer_length:
        print("Death")
-       game_over = True
-    return game_over
-    
+       crash = True
+    return crash
+           
 # Main Routine
 
 
 # Play Again Loop
 while not game_over:
+    while play_again == True:
+        # Background Colour
+        screen.fill(colours["dark_green"])
     
-    # Background Colour
-    screen.fill(colours["dark_green"])
+        # Road Creation
+        road = pygame.draw.rect(screen, colours["gray"], 
+                                [road_pos_x, road_pos_y, road_width, road_length])
     
-    # Road Creation
-    road = pygame.draw.rect(screen, colours["gray"], 
-                            [road_pos_x, road_pos_y, road_width, road_length])
-    
-    # Lanes Creation
-    lane_1 = pygame.draw.rect(screen, colours["white"], 
-                            [lane_pos_x_1, lane_pos_y, lane_width, lane_length])
-    lane_2 = pygame.draw.rect(screen, colours["white"], 
-                            [lane_pos_x_2, lane_pos_y, lane_width, lane_length])
-    lane_3 = pygame.draw.rect(screen, colours["white"], 
-                            [lane_pos_x_3, lane_pos_y, lane_width, lane_length])    
+        # Lanes Creation
+        lane_1 = pygame.draw.rect(screen, colours["white"], 
+                                [lane_pos_x_1, lane_pos_y, lane_width, lane_length])
+        lane_2 = pygame.draw.rect(screen, colours["white"], 
+                                [lane_pos_x_2, lane_pos_y, lane_width, lane_length])
+        lane_3 = pygame.draw.rect(screen, colours["white"], 
+                                [lane_pos_x_3, lane_pos_y, lane_width, lane_length])    
     
     
-    # Player Car Model
-    player_car = pygame.Rect(car_pos_x, car_pos_y, car_width, car_length)
-    player_car_image = pygame.image.load("images/car_1.png").convert_alpha()
-    resized_car = pygame.transform.smoothscale(player_car_image, [car_width, car_length])
-    screen.blit(resized_car, player_car)
+        # Player Car Model
+        player_car = pygame.Rect(car_pos_x, car_pos_y, car_width, car_length)
+        player_car_image = pygame.image.load("images/car_1.png").convert_alpha()
+        resized_car = pygame.transform.smoothscale(player_car_image, [car_width, car_length])
+        screen.blit(resized_car, player_car)
 
-    # Player Movement and Limiter Controller
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        quit_game = True
+        # Player Movement and Limiter Controller
+        for event in pygame.event.get():
+          if event.type == pygame.QUIT:
+            quit_game = True
+            game_over = True
         
-      if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_RIGHT and move_right == True:
-          car_change_x = 5   
+          if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT and move_right == True:
+              car_change_x = 5   
                      
-        elif event.key == pygame.K_LEFT and move_left == True:
-          car_change_x = -5
+            elif event.key == pygame.K_LEFT and move_left == True:
+              car_change_x = -5
             
-      if event.type == pygame.KEYUP:
-        if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
-          car_change_x = 0
+          if event.type == pygame.KEYUP:
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+              car_change_x = 0
           
+            if car_pos_x <= road_pos_x:
+               move_left = False
+           
+            if car_pos_x + car_width >= road_pos_x + road_width:
+               move_right = False
+    
+        # Moves car depending on what key is pressed
+        car_pos_x += car_change_x
+    
+        # Player Movement Limiter
         if car_pos_x <= road_pos_x:
            move_left = False
-           
-        if car_pos_x + car_width >= road_pos_x + road_width:
+           car_change_x = 0
+       
+        elif car_pos_x + car_width >= road_pos_x + road_width:
            move_right = False
+           car_change_x = 0
     
-    # Moves car depending on what key is pressed
-    car_pos_x += car_change_x
-    
-    # Player Movement Limiter
-    if car_pos_x <= road_pos_x:
-       move_left = False
-       car_change_x = 0
-       
-    elif car_pos_x + car_width >= road_pos_x + road_width:
-       move_right = False
-       car_change_x = 0
-    
-    else:
-       move_left = True
-       move_right = True
+        else:
+           move_left = True
+           move_right = True
        
     
-    # Other Racers Model
-    racer_1 = racer_creation(racer_car_1_pos_x, racer_car_pos_y_1)
-    racer_2 = racer_creation(racer_car_2_pos_x, racer_car_pos_y_2)
-    racer_3 = racer_creation(racer_car_3_pos_x, racer_car_pos_y_3)
-    racer_4 = racer_creation(racer_car_4_pos_x, racer_car_pos_y_4)
+        # Other Racers Model
+        racer_1 = racer_creation(racer_car_1_pos_x, racer_car_pos_y_1)
+        racer_2 = racer_creation(racer_car_2_pos_x, racer_car_pos_y_2)
+        racer_3 = racer_creation(racer_car_3_pos_x, racer_car_pos_y_3)
+        racer_4 = racer_creation(racer_car_4_pos_x, racer_car_pos_y_4)
     
-    # Enemy Racers Car Image Change
-    racer_1_image = racer_image(racer_1, "images/car_2.png")
-    racer_2_image = racer_image(racer_2, "images/car_3.png")
-    racer_3_image = racer_image(racer_3, "images/car_4.png")
-    racer_4_image = racer_image(racer_4, "images/car_5.png")
+        # Enemy Racers Car Image Change
+        racer_1_image = racer_image(racer_1, "images/car_2.png")
+        racer_2_image = racer_image(racer_2, "images/car_3.png")
+        racer_3_image = racer_image(racer_3, "images/car_4.png")
+        racer_4_image = racer_image(racer_4, "images/car_5.png")
     
-    # Enemy Racers Movement
-    racer_car_pos_y_1, speed_1, score = enemy_racer_movement(racer_car_pos_y_1, speed_1, score)
-    racer_car_pos_y_2, speed_2, score = enemy_racer_movement(racer_car_pos_y_2, speed_2, score)
-    racer_car_pos_y_3, speed_3, score = enemy_racer_movement(racer_car_pos_y_3, speed_3, score)
-    racer_car_pos_y_4, speed_4, score = enemy_racer_movement(racer_car_pos_y_4, speed_4, score)
+        # Enemy Racers Movement
+        racer_car_pos_y_1, speed_1, score = enemy_racer_movement(racer_car_pos_y_1, speed_1, score)
+        racer_car_pos_y_2, speed_2, score = enemy_racer_movement(racer_car_pos_y_2, speed_2, score)
+        racer_car_pos_y_3, speed_3, score = enemy_racer_movement(racer_car_pos_y_3, speed_3, score)
+        racer_car_pos_y_4, speed_4, score = enemy_racer_movement(racer_car_pos_y_4, speed_4, score)
 
-    # Random Speed for movement
-    racer_car_pos_y_1 += speed_1
-    racer_car_pos_y_2 += speed_2
-    racer_car_pos_y_3 += speed_3
-    racer_car_pos_y_4 += speed_4
+        # Random Speed for movement
+        racer_car_pos_y_1 += speed_1
+        racer_car_pos_y_2 += speed_2
+        racer_car_pos_y_3 += speed_3
+        racer_car_pos_y_4 += speed_4
 
-    # Collision Detection  
-    game_over = collision_detection(racer_car_1_pos_x, racer_car_pos_y_1, game_over)
-    game_over = collision_detection(racer_car_2_pos_x, racer_car_pos_y_2, game_over)
-    game_over = collision_detection(racer_car_3_pos_x, racer_car_pos_y_3, game_over)
-    game_over = collision_detection(racer_car_4_pos_x, racer_car_pos_y_4, game_over)
+        # Collision Detection  
+        crash = collision_detection(racer_car_1_pos_x, racer_car_pos_y_1, crash)
+        crash = collision_detection(racer_car_2_pos_x, racer_car_pos_y_2, crash)
+        crash = collision_detection(racer_car_3_pos_x, racer_car_pos_y_3, crash)
+        crash = collision_detection(racer_car_4_pos_x, racer_car_pos_y_4, crash)
        
-    # Score
-    display_text("Score: {}".format(score), colours["black"], None, True, False)
+        # Score
+        display_text("Score: {}".format(score), colours["black"], None, True, False)
 
-    # Highscore
-    highscore = load_high_score(score)
-    display_text("Highscore: {}".format(highscore), colours["black"], None, False, True)
+        # Highscore
+        highscore = load_high_score(score)
+        display_text("Highscore: {}".format(highscore), colours["black"], None, False, True)
     
-    # Debug
-    if debug == True:
-      # Lane Locations
-      print("\n*** Lane Strip Locations ***")
-      print("Lane 1 ", lane_1)
-      print("Lane 2 ", lane_2)
-      print("Lane 3 ", lane_3)
+        # Debug
+        if debug == True:
+          # Lane Locations
+          print("\n*** Lane Strip Locations ***")
+          print("Lane 1 ", lane_1)
+          print("Lane 2 ", lane_2)
+          print("Lane 3 ", lane_3)
       
-      # Car Lane Lengths
-      print("\n*** Car Lane Lengths ***")
-      print("Car Lane Length 1 ", lane_pos_x_1 - road_pos_x)
-      print("Car Lane Length 2 ", lane_pos_x_2 - (lane_pos_x_1 + lane_width))
-      print("Car Lane Length 3 ", lane_pos_x_3 - (lane_pos_x_2 + lane_width))
-      print("Car Lane Length 4 ", road_width + road_pos_x - (lane_pos_x_3 + lane_width))
+          # Car Lane Lengths
+          print("\n*** Car Lane Lengths ***")
+          print("Car Lane Length 1 ", lane_pos_x_1 - road_pos_x)
+          print("Car Lane Length 2 ", lane_pos_x_2 - (lane_pos_x_1 + lane_width))
+          print("Car Lane Length 3 ", lane_pos_x_3 - (lane_pos_x_2 + lane_width))
+          print("Car Lane Length 4 ", road_width + road_pos_x - (lane_pos_x_3 + lane_width))
       
-      # Player Car and Opposistion Locations
-      print("\n*** Player and other Car Locations ***")
-      print("Player Car ", player_car)
-      print("Racer 1 ", racer_1)
-      print("Racer 2 ", racer_2)
-      print("Racer 3 ", racer_3)
-      print("Racer 4 ", racer_4)
+          # Player Car and Opposistion Locations
+          print("\n*** Player and other Car Locations ***")
+          print("Player Car ", player_car)
+          print("Racer 1 ", racer_1)
+          print("Racer 2 ", racer_2)
+          print("Racer 3 ", racer_3)
+          print("Racer 4 ", racer_4)
       
-      # Racer Car Locations within lanes
-      print("\n *** Race Car Between Lane Locations ***")
-      print("Racer 1 Lane Location ", ((racer_width / 2) + racer_car_1_pos_x) - road_pos_x)
-      print("Racer 2 Lane Location ", ((racer_width / 2) + racer_car_2_pos_x) - (lane_pos_x_1 + lane_width))      
-      print("Racer 3 Lane Location ", ((racer_width / 2) + racer_car_3_pos_x) - (lane_pos_x_2 + lane_width))      
-      print("Racer 4 Lane Location ", ((racer_width / 2) + racer_car_4_pos_x) - (lane_pos_x_3 + lane_width))      
+          # Racer Car Locations within lanes
+          print("\n *** Race Car Between Lane Locations ***")
+          print("Racer 1 Lane Location ", ((racer_width / 2) + racer_car_1_pos_x) - road_pos_x)
+          print("Racer 2 Lane Location ", ((racer_width / 2) + racer_car_2_pos_x) - (lane_pos_x_1 + lane_width))      
+          print("Racer 3 Lane Location ", ((racer_width / 2) + racer_car_3_pos_x) - (lane_pos_x_2 + lane_width))      
+          print("Racer 4 Lane Location ", ((racer_width / 2) + racer_car_4_pos_x) - (lane_pos_x_3 + lane_width))      
 
-      # Stops the console from being overloaded with information
-      debug = False
+          # Stops the console from being overloaded with information
+          debug = False
 
+        # Player Death / Car Crash
+        if crash == True:
+            play_again = False
 
-    # Pygame Display Update
+        # Pygame Display Update
+        pygame.display.update()
+    
+        # FPS
+        clock.tick(40)
+    
+    
+    # Play Again
+    display_text("Press R to Play Again and Q to Quit", colours["black"], None, False, False)
     pygame.display.update()
-
-    # FPS
-    clock.tick(40)
-
+    
+    for event in pygame.event.get():
+       
+        if event.type == pygame.KEYDOWN:
+          
+            # Play Game Again
+            if event.key == pygame.K_r:
+                print("Play Again")
+            
+                # Game Reset Function resets car posistions
+                score = 0
+                racer_car_pos_y_1 = 0 - racer_length
+                racer_car_pos_y_2 = 0 - racer_length
+                racer_car_pos_y_3 = 0 - racer_length
+                racer_car_pos_y_4 = 0 - racer_length
+             
+                play_again = True
+                crash = False
+            
+            # Game Quits
+            elif event.key == pygame.K_q:
+                print("Quit Game")
+                game_over = True
 
 # Game Over
+pygame.quit()
 print("Game Quit")

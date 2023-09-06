@@ -194,6 +194,12 @@ def display_text(msg, txt_colour, bkgd_colour, is_score, is_highscore):
 
     screen.blit(txt, text_box)
 
+
+def racer_creation(x_pos, y_pos):
+   racer = pygame.Rect(x_pos, y_pos, racer_width, racer_length)
+   return racer
+
+
 # Main Routine
 
 
@@ -262,10 +268,10 @@ while not game_over:
        
     
     # Other Racers Model
-    racer_1 = pygame.Rect(racer_car_1_pos_x, racer_car_pos_y_1, racer_width, racer_length)
-    racer_2 = pygame.Rect(racer_car_2_pos_x, racer_car_pos_y_2, racer_width, racer_length)
-    racer_3 = pygame.Rect(racer_car_3_pos_x, racer_car_pos_y_3, racer_width, racer_length)
-    racer_4 = pygame.Rect(racer_car_4_pos_x, racer_car_pos_y_4, racer_width, racer_length)
+    racer_1 = racer_creation(racer_car_1_pos_x, racer_car_pos_y_1)
+    racer_2 = racer_creation(racer_car_2_pos_x, racer_car_pos_y_2)
+    racer_3 = racer_creation(racer_car_3_pos_x, racer_car_pos_y_3)
+    racer_4 = racer_creation(racer_car_4_pos_x, racer_car_pos_y_4)
     
     # Enemy Racers Car Image Change
     racer_green = pygame.image.load("images/car_2.png").convert_alpha()

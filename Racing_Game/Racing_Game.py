@@ -51,8 +51,8 @@ lane_pos_y = 0
 car_pos_x = screen_width / 2
 car_pos_y = screen_height - 200
 
-car_width = 50
-car_length = 90
+car_width = 60
+car_length = 100
 
 car_change_x = 0
 
@@ -223,6 +223,7 @@ def racer_image(racer, image):
     resized_racer = pygame.transform.smoothscale(racer_car_image, [racer_width, racer_length])
     screen.blit(resized_racer, racer)
     
+# Enemy Racer movement and randomizing speed after resetting posistion
 def enemy_racer_movement(racer_y, speed, score):
     
     """
@@ -239,6 +240,7 @@ def enemy_racer_movement(racer_y, speed, score):
        score += 1
     return racer_y, speed, score
 
+# Collision Detection and Game Over
 def collision_detection(racer_x, racer_y, game_over):
     if car_pos_x + car_width >= racer_x and car_pos_x <= racer_x + racer_width and car_pos_y + car_length >= racer_y and car_pos_y <= racer_y + racer_length:
        print("Death")
@@ -387,7 +389,7 @@ while not game_over:
     pygame.display.update()
 
     # FPS
-    #clock.tick(40)
+    clock.tick(40)
 
 
 # Game Over

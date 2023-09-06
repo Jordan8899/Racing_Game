@@ -77,11 +77,11 @@ racer_length = car_length
 
 racer_car_1_pos_x = (lane_pos_x_1 - road_pos_x) / 2 + road_pos_x - (racer_width / 2)
 
-racer_car_2_pos_x = racer_car_1_pos_x + 100
+racer_car_2_pos_x = racer_car_1_pos_x + 102.5
 
-racer_car_3_pos_x = racer_car_1_pos_x + 200
+racer_car_3_pos_x = racer_car_1_pos_x + 205
 
-racer_car_4_pos_x = racer_car_1_pos_x + 300
+racer_car_4_pos_x = racer_car_1_pos_x + 307.5
 
 racer_car_pos_y_1 = 0 - racer_length
 
@@ -268,8 +268,10 @@ while not game_over:
     
     
     # Player Car Model
-    player_car = pygame.draw.rect(screen, colours["red"],
-                                  [car_pos_x, car_pos_y, car_width, car_length])
+    player_car = pygame.Rect(car_pos_x, car_pos_y, car_width, car_length)
+    player_car_image = pygame.image.load("images/car_1.png").convert_alpha()
+    resized_car = pygame.transform.smoothscale(player_car_image, [car_width, car_length])
+    screen.blit(resized_car, player_car)
 
     # Player Movement and Limiter Controller
     for event in pygame.event.get():
@@ -370,6 +372,13 @@ while not game_over:
       print("Racer 3 ", racer_3)
       print("Racer 4 ", racer_4)
       
+      # Racer Car Locations within lanes
+      print("\n *** Race Car Between Lane Locations ***")
+      print("Racer 1 Lane Location ", ((racer_width / 2) + racer_car_1_pos_x) - road_pos_x)
+      print("Racer 2 Lane Location ", ((racer_width / 2) + racer_car_2_pos_x) - (lane_pos_x_1 + lane_width))      
+      print("Racer 3 Lane Location ", ((racer_width / 2) + racer_car_3_pos_x) - (lane_pos_x_2 + lane_width))      
+      print("Racer 4 Lane Location ", ((racer_width / 2) + racer_car_4_pos_x) - (lane_pos_x_3 + lane_width))      
+
       # Stops the console from being overloaded with information
       debug = False
 
@@ -378,7 +387,7 @@ while not game_over:
     pygame.display.update()
 
     # FPS
-    clock.tick(40)
+    #clock.tick(40)
 
 
 # Game Over

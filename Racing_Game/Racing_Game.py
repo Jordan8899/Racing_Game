@@ -224,15 +224,26 @@ def racer_image(racer, image):
     screen.blit(resized_racer, racer)
     
 def enemy_racer_movement(racer_y, speed, score):
+    
+    """
+    
+    Enemy Racer movement grabs racer_y posistion to return the car to start 
+    posistion for when it reaches the end of the road
+    then grabs speed value which gets randomized for a different speed
+    then grabs score to add to the score
+    
+    """
     if racer_y >= screen_height:
        racer_y = 0 - racer_length
        speed = randomizer()
        score += 1
-    return racer_y, score
+    return racer_y, speed, score
 
-def collision_detection(racer_x, racer_y):
+def collision_detection(racer_x, racer_y, game_over):
     if car_pos_x + car_width >= racer_x and car_pos_x <= racer_x + racer_width and car_pos_y + car_length >= racer_y and car_pos_y <= racer_y + racer_length:
        print("Death")
+       game_over = True
+    return game_over
     
 # Main Routine
 
@@ -312,32 +323,22 @@ while not game_over:
     racer_4_image = racer_image(racer_4, "images/car_5.png")
     
     # Enemy Racers Movement
-    racer_car_pos_y_1, score = enemy_racer_movement(racer_car_pos_y_1, speed_1, score)
-    racer_car_pos_y_2, score = enemy_racer_movement(racer_car_pos_y_2, speed_2, score)
-    racer_car_pos_y_3, score = enemy_racer_movement(racer_car_pos_y_3, speed_3, score)
-    racer_car_pos_y_4, score = enemy_racer_movement(racer_car_pos_y_4, speed_4, score)
+    racer_car_pos_y_1, speed_1, score = enemy_racer_movement(racer_car_pos_y_1, speed_1, score)
+    racer_car_pos_y_2, speed_2, score = enemy_racer_movement(racer_car_pos_y_2, speed_2, score)
+    racer_car_pos_y_3, speed_3, score = enemy_racer_movement(racer_car_pos_y_3, speed_3, score)
+    racer_car_pos_y_4, speed_4, score = enemy_racer_movement(racer_car_pos_y_4, speed_4, score)
 
+    # Random Speed for movement
     racer_car_pos_y_1 += speed_1
     racer_car_pos_y_2 += speed_2
     racer_car_pos_y_3 += speed_3
     racer_car_pos_y_4 += speed_4
 
     # Collision Detection  
-    if car_pos_x + car_width >= racer_car_1_pos_x and car_pos_x <= racer_car_1_pos_x + racer_width and car_pos_y + car_length >= racer_car_pos_y_1 and car_pos_y <= racer_car_pos_y_1 + racer_length:
-       print("Death Car 1")
-       game_over = True
-    
-    elif car_pos_x + car_width >= racer_car_2_pos_x and car_pos_x <= racer_car_2_pos_x + racer_width and car_pos_y + car_length >= racer_car_pos_y_2 and car_pos_y <= racer_car_pos_y_2 + racer_length:
-       print("Death Car 2")
-       game_over = True
-       
-    elif car_pos_x + car_width >= racer_car_3_pos_x and car_pos_x <= racer_car_3_pos_x + racer_width and car_pos_y + car_length >= racer_car_pos_y_3 and car_pos_y <= racer_car_pos_y_3 + racer_length:
-       print("Death Car 3")
-       game_over = True
-       
-    elif car_pos_x + car_width >= racer_car_4_pos_x and car_pos_x <= racer_car_4_pos_x + racer_width and car_pos_y + car_length >= racer_car_pos_y_4 and car_pos_y <= racer_car_pos_y_4 + racer_length:
-       print("Death Car 4")
-       game_over = True
+    game_over = collision_detection(racer_car_1_pos_x, racer_car_pos_y_1, game_over)
+    game_over = collision_detection(racer_car_2_pos_x, racer_car_pos_y_2, game_over)
+    game_over = collision_detection(racer_car_3_pos_x, racer_car_pos_y_3, game_over)
+    game_over = collision_detection(racer_car_4_pos_x, racer_car_pos_y_4, game_over)
        
     # Score
     display_text("Score: {}".format(score), colours["black"], None, True, False)

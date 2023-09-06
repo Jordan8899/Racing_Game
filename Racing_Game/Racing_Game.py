@@ -405,7 +405,7 @@ while not game_over:
     
     
     # Play Again
-    display_text("Press R to Play Again and Q to Quit", colours["black"], None, False, False)
+    display_text("Press R to Play Again and Q to Quit", colours["black"], colours["dark_green"], False, False)
     pygame.display.update()
     
     for event in pygame.event.get():

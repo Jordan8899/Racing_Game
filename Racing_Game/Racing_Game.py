@@ -194,12 +194,35 @@ def display_text(msg, txt_colour, bkgd_colour, is_score, is_highscore):
 
     screen.blit(txt, text_box)
 
-
+# Racer Creation
 def racer_creation(x_pos, y_pos):
+   
+   """
+   
+   Racer Creation takes the x_pos and y_pos of the enemy racer
+   and uses racer_width and racer_length already in the function
+   this then will return the racer so that it appears on screen
+   
+   """
+   
    racer = pygame.Rect(x_pos, y_pos, racer_width, racer_length)
    return racer
 
-
+# Racer Moving Car Image
+def racer_image(racer, image):
+    
+    """
+    
+    Racer image takes the enemy racer's location
+    and takes the car image wanted to replace it
+    and creates the image of a car being raced against
+    
+    """
+    
+    racer_car_image = pygame.image.load(image).convert_alpha()
+    resized_racer = pygame.transform.smoothscale(racer_car_image, [racer_width, racer_length])
+    screen.blit(resized_racer, racer)
+    
 # Main Routine
 
 
@@ -274,10 +297,11 @@ while not game_over:
     racer_4 = racer_creation(racer_car_4_pos_x, racer_car_pos_y_4)
     
     # Enemy Racers Car Image Change
-    racer_green = pygame.image.load("images/car_2.png").convert_alpha()
-    resized_green_racer = pygame.transform.smoothscale(racer_green, [racer_width, racer_length])
-    screen.blit(resized_green_racer, racer_4)
-
+    racer_1_image = racer_image(racer_1, "images/car_2.png")
+    racer_2_image = racer_image(racer_2, "images/car_3.png")
+    racer_3_image = racer_image(racer_3, "images/car_4.png")
+    racer_4_image = racer_image(racer_4, "images/car_5.png")
+    
     # Enemy Racers Movement
     if racer_car_pos_y_1 >= screen_height:
        racer_car_pos_y_1 = 0 - racer_length

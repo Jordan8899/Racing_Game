@@ -223,6 +223,15 @@ def racer_image(racer, image):
     resized_racer = pygame.transform.smoothscale(racer_car_image, [racer_width, racer_length])
     screen.blit(resized_racer, racer)
     
+def enemy_racer_movement(racer_y, speed, score):
+    if racer_y >= screen_height:
+       racer_y = 0 - racer_length
+       speed = randomizer()
+       score += 1
+    return racer_y, score
+
+    
+    
 # Main Routine
 
 
@@ -260,9 +269,6 @@ while not game_over:
                      
         elif event.key == pygame.K_LEFT and move_left == True:
           car_change_x = -5
-          
-        elif event.key == pygame.K_ESCAPE:
-          quit_game = True
             
       if event.type == pygame.KEYUP:
         if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
@@ -274,6 +280,7 @@ while not game_over:
         if car_pos_x + car_width >= road_pos_x + road_width:
            move_right = False
     
+    # Moves car depending on what key is pressed
     car_pos_x += car_change_x
     
     # Player Movement Limiter
@@ -303,25 +310,10 @@ while not game_over:
     racer_4_image = racer_image(racer_4, "images/car_5.png")
     
     # Enemy Racers Movement
-    if racer_car_pos_y_1 >= screen_height:
-       racer_car_pos_y_1 = 0 - racer_length
-       speed_1 = randomizer()
-       score += 1
-     
-    if racer_car_pos_y_2 >= screen_height:
-       racer_car_pos_y_2 = 0 - racer_length
-       speed_2 = randomizer()
-       score += 1
-       
-    if racer_car_pos_y_3 >= screen_height:
-       racer_car_pos_y_3 = 0 - racer_length
-       speed_3 = randomizer()
-       score += 1
-       
-    if racer_car_pos_y_4 >= screen_height:
-       racer_car_pos_y_4 = 0 - racer_length
-       speed_4 = randomizer()
-       score += 1
+    racer_car_pos_y_1, score = enemy_racer_movement(racer_car_pos_y_1, speed_1, score)
+    racer_car_pos_y_2, score = enemy_racer_movement(racer_car_pos_y_2, speed_2, score)
+    racer_car_pos_y_3, score = enemy_racer_movement(racer_car_pos_y_3, speed_3, score)
+    racer_car_pos_y_4, score = enemy_racer_movement(racer_car_pos_y_4, speed_4, score)
 
     racer_car_pos_y_1 += speed_1
     racer_car_pos_y_2 += speed_2

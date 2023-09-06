@@ -1,8 +1,8 @@
 # Imports
 import pygame, sys
-import random
+import random, time
 
-# Constants
+#  ************************* Constants *************************
 
 
 # Pygame Initilisation so that pygame works through the code
@@ -18,7 +18,6 @@ colours = {
     "blue": (0, 0, 255),
     "green": (0, 255, 0),
     "pink": (255, 0, 239)
-    
 }
 
 
@@ -81,20 +80,14 @@ racer_length = car_length
 
 # Enemy Racer Car X Posistions
 racer_x_1 = (lane_pos_x_1 - road_pos_x) / 2 + road_pos_x - (racer_width / 2)
-
 racer_x_2 = racer_x_1 + 102.5
-
 racer_x_3 = racer_x_1 + 205
-
 racer_x_4 = racer_x_1 + 307.5
 
 # Enemy Racer Y Starting Posistions
 racer_y_1 = 0 - racer_length
-
 racer_y_2 = 0 - racer_length
-
 racer_y_3 = 0 - racer_length
-
 racer_y_4 = 0 - racer_length
 
 # Speed Randomizer for Enemy Racers
@@ -122,15 +115,15 @@ crash = False
 score = 0
 
 
-# Functions
+# ************************* Functions *************************
 
 
 # Randomizer Function
 def randomizer():
     """
     
-    This function will use speed_list to get access to all available speeds
-    and randomly select one each time this function is called
+    This function will use speed_list to get access to all available 
+    speeds and randomly select one each time this function is called
     this function will return the speed and assign it to each car
     
     """
@@ -190,13 +183,13 @@ def display_text(msg, txt_colour, bkgd_colour, is_score, is_highscore):
     
     """
 
-    if is_score == True:
+    if is_score:
       txt = font.render(msg, True, txt_colour)
       text_box = txt.get_rect(center = ((screen_width / screen_width + 50), 
                                         (screen_height / screen_height + 25)))
 
 
-    elif is_highscore == True:
+    elif is_highscore:
       txt = font.render(msg, True, txt_colour)
       text_box = txt.get_rect(center = ((screen_width - 100), 
                                         (screen_height / screen_height + 25)))
@@ -237,11 +230,17 @@ def racer_image(racer, image):
     and creates the image of a car being raced against
     
     """
-    
-    racer_car_image = pygame.image.load(image).convert_alpha()
-    resized_racer = pygame.transform.smoothscale(racer_car_image, 
+    try:
+        racer_car_image = pygame.image.load(image).convert_alpha()
+        resized_racer = pygame.transform.smoothscale(racer_car_image, 
                                                  [racer_width, racer_length])
     
+    except:
+       screen.fill(colours["black"])
+       display_text("Error Image Files not found", colours["white"], None, 
+                    False, False)
+       print("\n *** Car Images Not Found *** \n")
+       
     screen.blit(resized_racer, racer)
 
     
@@ -250,8 +249,8 @@ def racer_movement(racer_y, speed, score):
     
     """
     
-    Enemy Racer movement grabs racer_y posistion to return the car to start 
-    posistion for when it reaches the end of the road
+    Enemy Racer movement grabs racer_y posistion to return the car 
+    to start posistion for when it reaches the end of the road
     then grabs speed value which gets randomized for a different speed
     then grabs score to add to the score
     
@@ -279,18 +278,28 @@ def collision_detection(racer_x, racer_y, crash):
         + racer_width and car_pos_y + car_length 
         >= racer_y and car_pos_y <= racer_y + racer_length):
        
-        print("Death")
+        print("\nDeath")
         crash = True
         
     return crash
            
-# Main Routine
+# ************************* Main Routine *************************
 
+# How to play the game
+screen.fill(colours["black"])
+
+display_text("Left and Right Arrow Keys to move, don't crash", 
+             colours["white"], None, False, False)
+
+pygame.display.update()
+
+# Timer Sleep so that people have time to read instructions
+time.sleep(5)
 
 # Play Again Loop
 while not game_over:
     
-    while play_again == True:
+    while play_again:
         
         # Background Colour (Either side of road)
         screen.fill(colours["dark_green"])
@@ -317,12 +326,7 @@ while not game_over:
     
         # Player Car Model (pl stands for player)
         pl_car = pygame.Rect(car_pos_x, car_pos_y, car_width, car_length)
-        
-        pl_car_image = pygame.image.load("images/car_1.png").convert_alpha()
-        
-        resized_car = pygame.transform.smoothscale(pl_car_image, [car_width, car_length])
-        
-        screen.blit(resized_car, pl_car)
+        pl_car_image = racer_image(pl_car, "images/car_1.png")
 
         # Player Movement and Limiter Controller
         for event in pygame.event.get():
@@ -332,10 +336,10 @@ while not game_over:
                 sys.exit()
         
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT and move_right == True:
+                if event.key == pygame.K_RIGHT and move_right:
                     car_change_x = 5   
                      
-                elif event.key == pygame.K_LEFT and move_left == True:
+                elif event.key == pygame.K_LEFT and move_left:
                     car_change_x = -5
             
             if event.type == pygame.KEYUP:
@@ -405,7 +409,7 @@ while not game_over:
                      None, False, True)
     
         # Debug
-        if debug == True:
+        if debug:
           # Lane Locations
           print("\n*** Lane Strip Locations ***")
           print("Lane 1 ", lane_1)
@@ -455,7 +459,7 @@ while not game_over:
           debug = False
 
         # Player Death / Car Crash
-        if crash == True:
+        if crash:
             play_again = False
 
         # Pygame Display Update
@@ -465,9 +469,10 @@ while not game_over:
         clock.tick(40)
     
     
-    # Play Again
-    display_text("Press R to Play Again and Q to Quit", colours["black"], 
-                                    colours["dark_green"], False, False)
+    # ************************* Play Again *************************
+    screen.fill(colours["dark_green"])
+    display_text("Press R to Play Again and Q to Quit Score: {}".format(score), 
+                 colours["black"], colours["dark_green"], False, False)
     
     pygame.display.update()
     
@@ -485,15 +490,23 @@ while not game_over:
                 racer_y_2 = 0 - racer_length
                 racer_y_3 = 0 - racer_length
                 racer_y_4 = 0 - racer_length
-             
+                
+                speed_1 = 3
+                speed_2 = 7
+                speed_3 = 2
+                speed_4 = 5
+                
+                car_change_x = 0         
+                car_pos_x = screen_width / 2 - (car_width / 2)
+    
                 play_again = True
                 crash = False
             
             # Game Quits
             elif event.key == pygame.K_q:
-                print("Quit Game")
+                print("\nQuit Game")
                 game_over = True
 
-# Game Over
+# ************************* Game Over *************************
 pygame.quit()
-print("Game Quit")
+print("\nGame Quit")

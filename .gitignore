@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/slnx.sqlite
+*.json
+/.vs/Racing_Game/v17/.wsuo
+/.vs/Racing_Game/FileContentIndex/d90842cc-ecd0-4838-94b2-43c6287358c7.vsidx
+/images
+*.vsidx

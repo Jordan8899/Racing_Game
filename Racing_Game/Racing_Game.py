@@ -230,7 +230,9 @@ def enemy_racer_movement(racer_y, speed, score):
        score += 1
     return racer_y, score
 
-    
+def collision_detection(racer_x, racer_y):
+    if car_pos_x + car_width >= racer_x and car_pos_x <= racer_x + racer_width and car_pos_y + car_length >= racer_y and car_pos_y <= racer_y + racer_length:
+       print("Death")
     
 # Main Routine
 

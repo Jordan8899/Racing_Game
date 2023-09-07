@@ -35,7 +35,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 # Music Audio File Load into program
 # Music created by ComaStudio
 # Copyright Free given by pixabay
-back_track = "music/stylish-rock-beat-trailer-116346.mp3"
+back_track = "music\stylish_rock_beat.mp3"
 crash_audio = "music/car_crash"
 
 # Music Volume Set
@@ -113,7 +113,10 @@ speed_3 = 2
 speed_4 = 5
 
 # Debug Variable for Statistics on game piece locations
+# Music sends an error message if file is not located
+# but plays music if file is located
 debug = True
+music = True
 
 # Game Over Variable to allow game to quit
 game_over = False
@@ -312,9 +315,17 @@ time.sleep(5)
 # Play Again Loop
 while not game_over:
     
-    # Music Plays
-    pygame.mixer.Channel(0).play(pygame.mixer.Sound(back_track))
-    
+    # Music Plays unless file is not located
+    if music:
+        try:
+            pygame.mixer.Channel(0).play(pygame.mixer.Sound(back_track))
+        
+        except:
+            # Prints into console one time
+            # shows music file not located top of console
+            print("\n***** Music file not located *****\n")
+            music = False
+
     while play_again:    
         
         # Background Colour (Either side of road)
@@ -478,6 +489,15 @@ while not game_over:
         if crash:
             # Music Stops            
             mixer.music.pause()
+            
+            # Crash Audio plays unless file cannot be found
+            # Stops an error from occuring if file is not found
+            try:
+                pygame.mixer.Channel(1).play(pygame.mixer.Sound(crash_audio))
+        
+            except:
+                print("\n*** Crash Audio File not found ***")
+            
             play_again = False
 
         # Pygame Display Update

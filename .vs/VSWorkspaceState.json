@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Racing_Game"
+    "\\Racing_Game",
+    "\\Racing_Game\\music"
   ],
+  "SelectedNode": "\\Racing_Game\\music\\stylish_rock_beat.mp3",
   "PreviewInSolutionExplorer": false
 }

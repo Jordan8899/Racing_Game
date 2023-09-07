@@ -1,12 +1,16 @@
 # Imports
-import pygame, sys
+import pygame
 import random, time
+from pygame import mixer
 
 #  ************************* Constants *************************
 
-
+ 
 # Pygame Initilisation so that pygame works through the code
 pygame.init()
+
+# Audio Mixer allow background music to be in the game
+mixer.init()
 
 # Colour Dictonary with colour values used within this game
 colours = {
@@ -27,6 +31,15 @@ screen_height = 800
 
 # Set screen display window
 screen = pygame.display.set_mode((screen_width, screen_height))
+
+# Music Audio File Load into program
+# Music created by ComaStudio
+# Copyright Free given by pixabay
+back_track = "music/stylish-rock-beat-trailer-116346.mp3"
+crash_audio = "music/car_crash"
+
+# Music Volume Set
+mixer.music.set_volume(0.2)
 
 # Road Location and Size
 road_pos_x = 100
@@ -299,7 +312,10 @@ time.sleep(5)
 # Play Again Loop
 while not game_over:
     
-    while play_again:
+    # Music Plays
+    pygame.mixer.Channel(0).play(pygame.mixer.Sound(back_track))
+    
+    while play_again:    
         
         # Background Colour (Either side of road)
         screen.fill(colours["dark_green"])
@@ -460,6 +476,8 @@ while not game_over:
 
         # Player Death / Car Crash
         if crash:
+            # Music Stops            
+            mixer.music.pause()
             play_again = False
 
         # Pygame Display Update

@@ -22,6 +22,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Racing_Game.py" />
+    <Compile Include="Sandbox.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="images\" />

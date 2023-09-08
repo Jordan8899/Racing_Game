@@ -294,6 +294,9 @@ def collision_detection(racer_x, racer_y, crash):
         + racer_width and car_pos_y + car_length 
         >= racer_y and car_pos_y <= racer_y + racer_length):
        
+        # Background Music Stops            
+        mixer.music.pause()
+        
         # Crash Audio plays unless file cannot be found
         # Stops an error from occuring if file is not found
         try:
@@ -496,9 +499,6 @@ while not game_over:
 
         # Player Death / Car Crash
         if crash:
-            # Music Stops            
-            mixer.music.pause()
-            
             # Game loop stops until user decides to play again or not
             play_again = False
 

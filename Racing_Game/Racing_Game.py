@@ -60,7 +60,7 @@ lane_pos_x_3 = lane_pos_x_2 + 100 + 2.5
 
 lane_pos_y = 0
 
-# Player Car Starting Location and Size
+# Player Car Starting Location and all car sizes
 car_width = 60
 car_length = 100
 
@@ -93,21 +93,17 @@ except:
 # Clock used for FPS
 clock = pygame.time.Clock()
 
-# Enemy Racers Locations and Size
-racer_width = car_width
-racer_length = car_length
-
 # Enemy Racer Car X Posistions
-racer_x_1 = (lane_pos_x_1 - road_pos_x) / 2 + road_pos_x - (racer_width / 2)
+racer_x_1 = (lane_pos_x_1 - road_pos_x) / 2 + road_pos_x - (car_width / 2)
 racer_x_2 = racer_x_1 + 102.5
 racer_x_3 = racer_x_1 + 205
 racer_x_4 = racer_x_1 + 307.5
 
 # Enemy Racer Y Starting Posistions
-racer_y_1 = 0 - racer_length
-racer_y_2 = 0 - racer_length
-racer_y_3 = 0 - racer_length
-racer_y_4 = 0 - racer_length
+racer_y_1 = 0 - car_length
+racer_y_2 = 0 - car_length
+racer_y_3 = 0 - car_length
+racer_y_4 = 0 - car_length
 
 # Speed Randomizer for Enemy Racers
 speed_list = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
@@ -204,6 +200,7 @@ def display_text(msg, txt_colour, bkgd_colour, is_score, is_highscore):
     bool if this display is for the highscore
     
     """
+    
     try:
         if is_score:
           txt = font.render(msg, True, txt_colour)
@@ -235,12 +232,12 @@ def racer_creation(x_pos, y_pos):
    """
    
    Racer Creation takes the x_pos and y_pos of the enemy racer
-   and uses racer_width and racer_length already in the function
+   and uses car_width and car_length already in the function
    this then will return the racer so that it appears on screen
    
    """
    
-   racer = pygame.Rect(x_pos, y_pos, racer_width, racer_length)
+   racer = pygame.Rect(x_pos, y_pos, car_width, car_length)
    
    return racer
 
@@ -258,16 +255,17 @@ def racer_image(racer, image):
     try:
         racer_car_image = pygame.image.load(image).convert_alpha()
         resized_racer = pygame.transform.smoothscale(racer_car_image, 
-                                                 [racer_width, racer_length])
+                                                 [car_width, car_length])
+    
+        screen.blit(resized_racer, racer)
     
     except:
-       screen.fill(colours["black"])
-       display_text("Error Image Files not found", colours["white"], None, 
-                    False, False)
-       print("\n *** Car Images Not Found *** \n")
+       while True:
+            screen.fill(colours["black"])
+            display_text("Error Image Files not found", colours["white"], 
+                         None, False, False)
+            print("\n *** Car Images Not Found *** \n")
        
-    screen.blit(resized_racer, racer)
-
     
 # Enemy Racer movement and randomizing speed after resetting posistion
 def racer_movement(racer_y, speed, score):
@@ -282,7 +280,7 @@ def racer_movement(racer_y, speed, score):
     """
     
     if racer_y >= screen_height:
-       racer_y = 0 - racer_length
+       racer_y = 0 - car_length
        speed = randomizer()
        score += 1
        
@@ -300,8 +298,8 @@ def collision_detection(racer_x, racer_y, crash):
     """
 
     if (car_pos_x + car_width >= racer_x and car_pos_x <= racer_x 
-        + racer_width and car_pos_y + car_length 
-        >= racer_y and car_pos_y <= racer_y + racer_length):
+        + car_width and car_pos_y + car_length 
+        >= racer_y and car_pos_y <= racer_y + car_length):
        
         # Background Music Stops            
         mixer.music.pause()
@@ -373,7 +371,7 @@ while not game_over:
     
     
         # Player Car Model (pl stands for player)
-        pl_car = pygame.Rect(car_pos_x, car_pos_y, car_width, car_length)
+        pl_car = racer_creation(car_pos_x, car_pos_y)
         pl_car_image = racer_image(pl_car, "images/car_1.png")
 
         # Player Movement and Limiter Controller
@@ -489,17 +487,17 @@ while not game_over:
           # Racer Car Locations within lanes
           print("\n *** Race Car Between Lane Locations ***")
           
-          print("Racer 1 Lane Location ", (((racer_width / 2) 
+          print("Racer 1 Lane Location ", (((car_width / 2) 
                                             + racer_x_1) - road_pos_x))
           
-          print("Racer 2 Lane Location ", (((racer_width / 2) + racer_x_2) 
+          print("Racer 2 Lane Location ", (((car_width / 2) + racer_x_2) 
                                            - (lane_pos_x_1 + lane_width)))
           
-          print("Racer 3 Lane Location ", (((racer_width / 2) + racer_x_3) 
+          print("Racer 3 Lane Location ", (((car_width / 2) + racer_x_3) 
                                            - (lane_pos_x_2 + lane_width)))
           
           
-          print("Racer 4 Lane Location ", (((racer_width / 2) + racer_x_4) 
+          print("Racer 4 Lane Location ", (((car_width / 2) + racer_x_4) 
                                            - (lane_pos_x_3 + lane_width)))
           
 
@@ -535,10 +533,10 @@ while not game_over:
             
                 # Game Reset Function resets car posistions
                 score = 0
-                racer_y_1 = 0 - racer_length
-                racer_y_2 = 0 - racer_length
-                racer_y_3 = 0 - racer_length
-                racer_y_4 = 0 - racer_length
+                racer_y_1 = 0 - car_length
+                racer_y_2 = 0 - car_length
+                racer_y_3 = 0 - car_length
+                racer_y_4 = 0 - car_length
                 
                 speed_1 = 3
                 speed_2 = 7

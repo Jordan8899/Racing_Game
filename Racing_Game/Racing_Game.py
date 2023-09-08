@@ -208,13 +208,13 @@ def display_text(msg, txt_colour, bkgd_colour, is_score, is_highscore):
         if is_score:
           txt = font.render(msg, True, txt_colour)
           text_box = txt.get_rect(center = ((screen_width / screen_width + 50), 
-                                            (screen_height / screen_height + 25)))
+                            (screen_height / screen_height + 25)))
 
 
         elif is_highscore:
           txt = font.render(msg, True, txt_colour)
           text_box = txt.get_rect(center = ((screen_width - 100), 
-                                            (screen_height / screen_height + 25)))
+                             (screen_height / screen_height + 25)))
 
     
         else:

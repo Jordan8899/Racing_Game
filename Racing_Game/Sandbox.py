@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 
 pygame.init()
 
@@ -20,7 +20,27 @@ colours = {
     "pink": (255, 0, 239)
 }
 
+# Speed List
+speed_list = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+
+# Functions
+def randomizer():
+    """
+    
+    This function will use speed_list to get access to all available 
+    speeds and randomly select one each time this function is called
+    this function will return the speed and assign it to each car
+    
+    """
+    speed_changes = len(speed_list) - 1
+    randomized_number = random.randint(0, speed_changes)
+    
+    return speed_list[randomized_number]
+
+for i in range(0, 10):
+    speed = randomizer()
+    print(speed)
 
 while True:
     screen.fill(colours["dark_green"])
-    pygame.display.update()
+    pygame.display.update()    

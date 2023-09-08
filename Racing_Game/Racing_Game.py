@@ -345,6 +345,7 @@ while not game_over:
             print("\n***** Music file not located *****\n")
             music = False
 
+    # Actual Game Loop
     while play_again:    
         
         # Background Colour (Either side of road)

@@ -1,5 +1,5 @@
 # Imports
-import pygame
+import pygame, sys
 import random, time
 from pygame import mixer
 
@@ -204,26 +204,29 @@ def display_text(msg, txt_colour, bkgd_colour, is_score, is_highscore):
     bool if this display is for the highscore
     
     """
+    try:
+        if is_score:
+          txt = font.render(msg, True, txt_colour)
+          text_box = txt.get_rect(center = ((screen_width / screen_width + 50), 
+                                            (screen_height / screen_height + 25)))
 
-    if is_score:
-      txt = font.render(msg, True, txt_colour)
-      text_box = txt.get_rect(center = ((screen_width / screen_width + 50), 
-                                        (screen_height / screen_height + 25)))
 
-
-    elif is_highscore:
-      txt = font.render(msg, True, txt_colour)
-      text_box = txt.get_rect(center = ((screen_width - 100), 
-                                        (screen_height / screen_height + 25)))
+        elif is_highscore:
+          txt = font.render(msg, True, txt_colour)
+          text_box = txt.get_rect(center = ((screen_width - 100), 
+                                            (screen_height / screen_height + 25)))
 
     
-    else:
-      txt = font.render(msg, True, txt_colour, bkgd_colour)
-      text_box = txt.get_rect(center = ((screen_width / 2), 
-                                        (screen_height / 2)))
+        else:
+          txt = font.render(msg, True, txt_colour, bkgd_colour)
+          text_box = txt.get_rect(center = ((screen_width / 2), 
+                                            (screen_height / 2)))
     
 
-    screen.blit(txt, text_box)
+        screen.blit(txt, text_box)
+    
+    except:
+        print("Font not found")
 
 
 # Racer Creation

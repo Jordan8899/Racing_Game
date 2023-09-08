@@ -9,7 +9,7 @@ screen_height = 800
 # Set screen display window
 screen = pygame.display.set_mode((screen_width, screen_height))
 
-back_track = "music/stylish_rock_beat.mp3"
+back_track = "this_is_a_working_directory/music/stylish_rock_beat.mp3"
 crash_audio = "music/car_crash"
 
 music = True

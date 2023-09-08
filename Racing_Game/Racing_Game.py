@@ -34,8 +34,10 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 # Music Audio File Load into program
 # Music created by ComaStudio
-# Copyright Free given by pixabay
+# Copyright Free given by Pixabay
 back_track = "music/stylish_rock_beat.mp3"
+
+# Crash Audio made and supplied Royalty Free by Pixabay
 crash_audio = "music/crash.mp3"
 
 # Music Volume Set

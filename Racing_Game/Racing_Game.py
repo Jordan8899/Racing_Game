@@ -35,8 +35,8 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 # Music Audio File Load into program
 # Music created by ComaStudio
 # Copyright Free given by pixabay
-back_track = "music\stylish_rock_beat.mp3"
-crash_audio = "music/car_crash"
+back_track = "music/stylish_rock_beat.mp3"
+crash_audio = "music/crash.mp3"
 
 # Music Volume Set
 mixer.music.set_volume(0.2)
@@ -294,6 +294,15 @@ def collision_detection(racer_x, racer_y, crash):
         + racer_width and car_pos_y + car_length 
         >= racer_y and car_pos_y <= racer_y + racer_length):
        
+        # Crash Audio plays unless file cannot be found
+        # Stops an error from occuring if file is not found
+        try:
+            pygame.mixer.Channel(1).play(pygame.mixer.Sound(crash_audio))
+            time.sleep(1.5)
+        
+        except:
+            print("\n*** Crash Audio File not found ***")
+                
         print("\nDeath")
         crash = True
         
@@ -490,14 +499,7 @@ while not game_over:
             # Music Stops            
             mixer.music.pause()
             
-            # Crash Audio plays unless file cannot be found
-            # Stops an error from occuring if file is not found
-            try:
-                pygame.mixer.Channel(1).play(pygame.mixer.Sound(crash_audio))
-        
-            except:
-                print("\n*** Crash Audio File not found ***")
-            
+            # Game loop stops until user decides to play again or not
             play_again = False
 
         # Pygame Display Update

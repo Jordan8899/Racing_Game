@@ -84,7 +84,11 @@ except:
    print("Game Icon Image not found")
 
 # Fonts and font size
-font = pygame.font.Font("freesansbold.ttf", 25)
+try:
+    font = pygame.font.Font("freesansbold.ttf", 25)
+
+except:
+    print("\nFont not found")
 
 # Clock used for FPS
 clock = pygame.time.Clock()
